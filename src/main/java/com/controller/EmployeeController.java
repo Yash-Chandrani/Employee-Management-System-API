@@ -33,11 +33,15 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/employees")
-	public ResponseBean<List<EmployeeBean>> getAllEmps(@RequestParam("authToken") String authToken)
+	public ResponseBean<List<EmployeeBean>> getAllEmps(@RequestParam(defaultValue="NA",name="authToken") String authToken)
 	{
 		System.out.println("token=>"+authToken);
 		
-		if(employeeDao.validateToken(authToken))
+		if(authToken==null || authToken.equals("NA"))
+		{
+			return ResponseBean.data(null, "Invalid user", -1);
+		}
+		else if(employeeDao.validateToken(authToken))
 		{
 			return ResponseBean.data(employeeDao.getAllEmployees(), "Employees Retrieved", 200);
 		}
